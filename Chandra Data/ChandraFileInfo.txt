@@ -37,5 +37,3 @@ ID	ID.num	File.Name	Visual.Object	ObsID	Exposure.ks	Target	RA	Dec
 36	15364	acisf15364_repro_evt2_500-8000eV_t1.txt	0	16364	9.65	PSR B1919+21	19 21 44.80	+21 53 02.20
 37	15365	acisf15365_repro_evt2_500-8000eV_t1.txt	0	15365	10.92	HESS J1843-033B	18 43 21.70	-03 31 45.10
 38	15366	acisf15366_repro_evt2_500-8000eV_t1.txt	0	15366	9.94	PSR J2043+1711	20 43 20.90	+17 11 28.00
-								
-								
