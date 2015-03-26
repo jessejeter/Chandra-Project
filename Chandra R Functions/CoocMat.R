@@ -46,7 +46,7 @@ CM.ver <- (CM.ver + t(CM.ver))/(2 * sum(CM.ver))
 CM.both <- 1/2 * (CM.hor + CM.ver)
 
 final.object <- list(CM.hor, CM.ver, CM.both)
-names(final.object) <- c("CM.hor", "CM.ver", "CM.both")
+names(final.object) <- c("hor", "ver", "both")
 return(final.object)
 
 }

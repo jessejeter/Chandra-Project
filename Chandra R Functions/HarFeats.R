@@ -1,7 +1,15 @@
-# Testing line one change.
-# Testing line two change.
-#f2
+HarFeats <- function(CM, feat.nums = 1:11) {
 
+# Preallocate vector of features
+textural.feat <- rep(NA, 11)
+
+
+## Feature 1: Angular Second Moment
+textural.feat[1] <- sum(CM^2)
+####
+
+
+## Feature 2: Contrast
 sum21 <- 0
 
 for (n in 1:7){
@@ -14,12 +22,11 @@ for (n in 1:7){
   sum21 <- sum21 + sum22*n^2
               }
 
-f2 <- sum21
+textural.feat[2] <- sum21
+####
 
 
-
-#f3
-
+## Feature 3: Correlation
 sum3 <- 0
 
 for (i in 1:8){
@@ -31,10 +38,11 @@ for (i in 1:8){
 px <- rowMeans(CM)
 py <- colMeans(CM)
 
-f3 <- (sum3 - mean(px)*mean(py)) / (sd(px)*sd(py))
-    
-#f4
+textural.feat[3] <- (sum3 - mean(px)*mean(py)) / (sd(px)*sd(py))
+####
 
+
+## Feature 4: Sum of Squares
 sum4 <- 0
 
 for (i in 1:8){
@@ -43,10 +51,11 @@ for (i in 1:8){
                 }
               }
 
-f4 <- sum4
+textural.feat[4] <- sum4
+####
 
-#f5
 
+## Feature 5: Inverse Difference Moment
 sum5 <- 0
 
 for (i in 1:8){
@@ -55,10 +64,11 @@ for (i in 1:8){
                 }
               }
 
-f5 <- sum5
+textural.feat[5] <- sum5
+####
 
-#f6
 
+## Feature 6: Sum Average
 sum61 <- 0
 
 for (n in 2:16){
@@ -69,9 +79,27 @@ for (n in 2:16){
   sum61 <- sum61 + sum62*n 
                }
             
-f6 <- sum61
+textural.feat[6] <- sum61
+####
 
-#f8
+
+## Feature 7: Sum Variance
+# since f8 failed so can not figure out f7 either
+sum71 <- 0
+
+for (n in 2:16){
+  sum72 <- 0
+  for (i in 1:8){
+    if(((n-i)>0)&((n-i)<9)) {sum72 <- sum72 + CM[i,n-i]}                
+                }
+  sum71 <- sum71 + sum71*(n-f8)^2
+               }
+
+textural.feat[7] <- sum71
+####
+
+
+## Feature 8: Sum Entropy
 # somehow I failed to figure out f8 and the log function may be the reason
 # I found the reason
 # the three numbers in the bottom right corner of Matirx CM are all 0
@@ -87,24 +115,11 @@ for (n in 2:16){
   sum81 <- sum81 + sum82*log(sum82)
                }
 
-f8 <- -sum81
+textural.feat[8] <- -sum81
+####
 
-#f7
-# since f8 failed so can not figure out f7 either
 
-sum71 <- 0
-
-for (n in 2:16){
-  sum72 <- 0
-  for (i in 1:8){
-    if(((n-i)>0)&((n-i)<9)) {sum72 <- sum72 + CM[i,n-i]}                
-                }
-  sum71 <- sum71 + sum71*(n-f8)^2
-               }
-
-f7 <- sum71
-
-#f9
+## Feature 9: Entropy
 # f9 also failed because of the log function
 
 sum9 <- 0
@@ -115,10 +130,11 @@ for (i in 1:8){
                 }
               }
 
-f9 <- -sum9
+textural.feat[9] <- -sum9
+####
 
-#f10
 
+## Feature 10: Difference Variance
 pxMINUSy <- c()
 
 for (n in 1:7){
@@ -131,47 +147,21 @@ for (n in 1:7){
   pxMINUSy[n] <- sum10
               }
 
-f10 <- var(pxMINUSy)
+textural.feat[10] <- var(pxMINUSy)
 
-#f11
 
+## Feature 11: Difference Entropy
 sum11 <- 0
 
 for (n in 1:7){
   sum11 <- sum11 + pxMINUSy[n]*log(pxMINUSy[n])
               }
 
-f11 <- -sum11
+textural.feat[11] <- -sum11
+####
 
+return(textural.feat[feat.nums])
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 
