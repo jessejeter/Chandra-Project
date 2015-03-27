@@ -8,8 +8,8 @@ quad.count <- rep(NA, dim(Z)[1])
 
 for(i in 1:dim(Z)[1]) {
   quad.count[i] <- sum(point.in.polygon(X, Y, 
-                    c(Z[i, 1], Z[i, 1] + qs, Z[i, 1] + qs, Z[i, 1]),
-                    c(Z[i, 2], Z[i, 2], Z[i, 2] + qs, Z[i, 2] + qs)) > 0)
+       c(Z[i, 1] - qs/2, Z[i, 1] + qs/2, Z[i, 1] + qs/2, Z[i, 1] - qs/2),
+       c(Z[i, 2] - qs/2, Z[i, 2] - qs/2, Z[i, 2] + qs/2, Z[i, 2] + qs/2)) > 0)
 }
 
 qs.len <- length(seq(-1, 1, qs))
