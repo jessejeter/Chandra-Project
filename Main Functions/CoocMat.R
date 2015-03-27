@@ -15,6 +15,7 @@ for(i in 1:dim(Z)[1]) {
 qs.len <- length(seq(-1, 1, qs))
 
 count.mat <- matrix(quad.count, qs.len, qs.len)
+count.mat.full <- count.mat
 for(i in 1:dim(count.mat)[1]) {
   for(j in 1:dim(count.mat)[1]) {
     count.mat[i, j] <- min(count.mat[i, j], max.count - 1)
@@ -45,8 +46,8 @@ CM.ver <- (CM.ver + t(CM.ver))/(2 * sum(CM.ver))
 
 CM.both <- 1/2 * (CM.hor + CM.ver)
 
-final.object <- list(CM.hor, CM.ver, CM.both)
-names(final.object) <- c("hor", "ver", "both")
+final.object <- list(CM.hor, CM.ver, CM.both, count.mat.full)
+names(final.object) <- c("hor", "ver", "both", "qcounts")
 return(final.object)
 
 }
