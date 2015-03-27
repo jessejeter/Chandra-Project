@@ -8,6 +8,12 @@ beta.est <- t(cbind(c( 5.6818182, 11.3636364,  5.68181818),
                     c( 0.4924555,  0.5838909, -0.06736753),
                     c(-4.6434594, 11.2854865, -5.64202320)))
 
+int.range <- c(-1, -.96, -.04, 0, .04, .96, 1)
+int.est <- c(0, .44, .56, .20, .56, .44, 0)
+area.int <- sum(1/2 * (int.est[1:6] + int.est[2:7]) * diff(int.range))
+int.est.norm <- int.est/area.int
+int.sum <- c(0, cumsum(1/2 * (int.est.norm[1:6] + int.est.norm[2:7]) * 
+                       diff(int.range)))
 
 quant.pt <- rep(0, length(z))
 quant.pt <- (z==0)*(-1)

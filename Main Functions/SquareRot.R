@@ -43,8 +43,8 @@ X.new <- X.new - mean(range(X.new))
 Y.new <- Y.new - mean(range(Y.new))
 
 # Calculate the half-length of the largest side of the minimal bounding 
-# rectangle.
-kSide.len <- max(c(X.new, Y.new))
+# rectangle. Multiply be rescaling factor so that no points lie on boundary.
+kSide.len <- max(c(X.new, Y.new)) * (1+log(2)/length(X))
 
 # Rescale (X,Y) points so that they lie in [-1,1]x[-1,1].
 X.new <- X.new / kSide.len
