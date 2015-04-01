@@ -15,7 +15,7 @@ pval <- rep(NA, num.imgs)
 
 for(i in 1:num.imgs) {
   DF <- ImportChandra("C:/Users/jeterjp/Documents/GitHub/Chandra-Project/Data/Text Files/", file.name=paste(Chandra.info[i, 3]))
-  DF.new <- PointSources(DF[, 3], DF[, 4], 10)
+  DF.new <- PointSourcesCounts2(DF[, 3], DF[, 4], .02)
   X <- DF.new$final.points[, 1]
   Y <- DF.new$final.points[, 2]
 
@@ -25,5 +25,7 @@ for(i in 1:num.imgs) {
   pval[i] <- 2 * min(pnorm(Z[i]), 1 - pnorm(Z[i]))
 }
 
-plot(which(Chandra.info[,4]==0),Zscore[which(Chandra.info[,4]==0)],col='red',ylim=c(-20,10))
-points(which(Chandra.info[,4]==1),Zscore[which(Chandra.info[,4]==1)],col='blue')
+
+plot(Z, col=ifelse(Chandra.info[, 4] == 0, 'red', 'blue'))
+
+plot(sort(Z), col=ifelse(Chandra.info[order(Z), 4] == 0, 'red', 'blue'))
