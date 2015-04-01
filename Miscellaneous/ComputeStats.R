@@ -1,9 +1,12 @@
+# ComputeStats.R
+
 # Run SquareRot
 # Run ImportChandra
 # Run QuadWindow
 # Run CoocMat
+# Run PointSources
 
-Chandra.info <- read.table("C:/Users/jeterjp/Documents/GitHub/Chandra-Project/Chandra Data/ChandraFileInfo.txt", 
+Chandra.info <- read.table("C:/Users/jeterjp/Documents/GitHub/Chandra-Project/Data/ChandraFileInfo.txt", 
 				    header=TRUE, sep="\t")
 
 num.files <- dim(Chandra.info)[1]
@@ -16,9 +19,10 @@ pval <- matrix(NA, num.files, 11)
 for(i in 1:num.files) {
   DF <- ImportChandra("C:/Users/jeterjp/Documents/GitHub/Chandra-Project/Chandra Data/Text Files/",
                        file.name=as.character(Chandra.info[i, 3]))
-  X <- DF[,3]
-  Y <- DF[,4]
-  CM <- CoocMat(X,Y,.05,8)$"both"
+  Z <- PointSources(DF[, 3], DF[, 4], 10)
+  X <- Z$final.points[, 1]
+  Y <- Z$final.points[, 2]
+  CM <- CoocMat(X, Y, .05, 8)$"both"
   HF[i, ] <- HarFeats(CM)
 
   for(j in 1:N.sim) {

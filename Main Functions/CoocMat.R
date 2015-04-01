@@ -1,25 +1,17 @@
-CoocMat <- function(X, Y, qs, max.count) {
+CoocMat <- function(X, Y, qs, max.count="None") {
 
-require(sp)
+count.mat <- QuadWindow(X, Y, qs)$"count.mat"
 
-Z <- QuadWindow(qs)
-
-quad.count <- rep(NA, dim(Z)[1])
-
-for(i in 1:dim(Z)[1]) {
-  quad.count[i] <- sum(point.in.polygon(X, Y, 
-       c(Z[i, 1] - qs/2, Z[i, 1] + qs/2, Z[i, 1] + qs/2, Z[i, 1] - qs/2),
-       c(Z[i, 2] - qs/2, Z[i, 2] - qs/2, Z[i, 2] + qs/2, Z[i, 2] + qs/2)) > 0)
+if(max.count == "None") {
+  max.count <- max(count.mat)
 }
 
-qs.len <- length(seq(-1, 1, qs))
-
-count.mat <- matrix(quad.count, qs.len, qs.len)
-count.mat.full <- count.mat
-for(i in 1:dim(count.mat)[1]) {
-  for(j in 1:dim(count.mat)[1]) {
-    count.mat[i, j] <- min(count.mat[i, j], max.count - 1)
-  }
+if(max.count != "None") {
+  for(i in 1:dim(count.mat)[1]) {
+    for(j in 1:dim(count.mat)[1]) {
+      count.mat[i, j] <- min(count.mat[i, j], max.count - 1)
+    }
+  } 
 }
 
 CM.hor <- matrix(0, max.count, max.count)
@@ -46,9 +38,8 @@ CM.ver <- (CM.ver + t(CM.ver))/(2 * sum(CM.ver))
 
 CM.both <- 1/2 * (CM.hor + CM.ver)
 
-final.object <- list(CM.hor, CM.ver, CM.both, count.mat.full)
-names(final.object) <- c("hor", "ver", "both", "qcounts")
+final.object <- list(CM.hor, CM.ver, CM.both, count.mat)
+names(final.object) <- c("hor", "ver", "both", "count.mat")
 return(final.object)
 
 }
-
