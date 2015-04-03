@@ -58,7 +58,8 @@ plot(apply(pval, 1, min), ylim=c(0, 1))
 
 file.id.mat <- replicate(num.feats, 1:num.files)
 feat.id.mat <- t(replicate(num.files, 1:num.feats))
-plot(file.id.mat, pval, col=(file.id.mat %% 4) + 1, pch=paste(feat.id.mat))
+plot(file.id.mat, pval, col=(file.id.mat %% 2) + 1, pch=paste(feat.id.mat), 
+     cex=.5)
 
 feat <- 13
 plot(pval[, feat], ylim=c(0, 1))
