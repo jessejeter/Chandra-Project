@@ -15,6 +15,7 @@ Z <- cbind(X.quads, Y.quads)
 if(method == "spatstat") {
   require(spatstat)  # Load spatstat to use quadratcount
   # Calculated count matrix
+  w <- owin(c(-1, 1), c(-1, 1))
   count.mat <- quadratcount(ppp(x=Y, y=-X, window=w), nx=2/qs, ny=2/qs)
 } else if(method == "sp") {
   require(sp)  # Load sp to use point.in.polygon function

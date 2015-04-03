@@ -1,164 +1,149 @@
-HarFeats <- function(CM, feat.nums = 1:11) {
+HarFeats <- function(p) {
 
-# Preallocate vector of features
-textural.feat <- rep(NA, 11)
+f <- rep(NA, 13)  # Preallocate vector of features
+N.g <- dim(p)[1]  # Specify the maximum count
+p.x <- rowSums(p)  # Row marginal
+p.y <- colSums(p)  # Column marginal
+mu.x <- sum(0:(N.g - 1) * p.x)
+mu.y <- sum(0:(N.g - 1) * p.y)
+sig.x <- sqrt(sum((0:(N.g - 1) - mu.x)^2 * p.x))
+sig.y <- sqrt(sum((0:(N.g - 1) - mu.y)^2 * p.y))
+x.num.mat <- replicate(N.g, 0:(N.g - 1))
+y.num.mat <- t(replicate(N.g, 0:(N.g - 1)))
 
+# Convolution probabilities
+p.xy.add <- c(sapply(2:(N.g + 1), function(k) sum(diag(as.matrix(
+                     p[1:(k - 1), (k - 1):1])))),
+              sapply(2:N.g, function(k) sum(diag(as.matrix(
+                     p[k:N.g, N.g:k])))))
+
+# Cross-correlation probabilities
+p.xy.diff <- sapply(0:(N.g - 1), function(k) ifelse(k == 0, 1, 2) * 
+               sum(diag(as.matrix(p[1:(N.g - k), (k + 1):N.g]))))
+
+# Entropy component function
+Ent.comp <- function(x) {
+  y <- ifelse(is.na(x*log(x)),0,x*log(x))
+  return(y)
+}
 
 ## Feature 1: Angular Second Moment
-textural.feat[1] <- sum(CM^2)
+
+f[1] <- sum(p^2)
+
 ####
 
 
 ## Feature 2: Contrast
-sum21 <- 0
 
-for (n in 1:7){
-  sum22 <- 0
-  for (i in 1:8){
-    if(((i-n)>0) & ((i+n)<9)) {sum22 <- sum22 + CM[i,i-n] + CM[i,i+n]}
-    if(((i-n)>0) & ((i+n)>=9)) {sum22 <- sum22 + CM[i,i-n]}
-    if(((i-n)<=0) & ((i+n)<9)) {sum22 <- sum22 + CM[i,i+n]}
-                }
-  sum21 <- sum21 + sum22*n^2
-              }
+f[2] <- sum((0:(N.g - 1))^2 * p.xy.diff)
 
-textural.feat[2] <- sum21
 ####
 
 
 ## Feature 3: Correlation
-sum3 <- 0
 
-for (i in 1:8){
-  for (j in 1:8){
-    sum3 <- sum3 + i*j*CM[i,j]
-                }
-              }
+f[3] <- (sum(x.num.mat * y.num.mat * p) - mu.x * mu.y) / 
+                    (sig.x * sig.y)
 
-px <- rowMeans(CM)
-py <- colMeans(CM)
-
-textural.feat[3] <- (sum3 - mean(px)*mean(py)) / (sd(px)*sd(py))
 ####
 
 
 ## Feature 4: Sum of Squares
-sum4 <- 0
 
-for (i in 1:8){
-  for (j in 1:8){
-    sum4 <- sum4 + CM[i,j]*(i-mean(CM))^2
-                }
-              }
+f[4] <- sum(((x.num.mat - mu.x)^2 + (y.num.mat - mu.y)^2) * p)
 
-textural.feat[4] <- sum4
 ####
 
 
 ## Feature 5: Inverse Difference Moment
-sum5 <- 0
 
-for (i in 1:8){
-  for (j in 1:8){
-    sum5 <- sum5 + CM[i,j]/(1+(i-j)^2)
-                }
-              }
+f[5] <- sum(1 / (1 + (x.num.mat - y.num.mat)^2) * p)
 
-textural.feat[5] <- sum5
 ####
 
 
 ## Feature 6: Sum Average
-sum61 <- 0
 
-for (n in 2:16){
-  sum62 <- 0
-  for (i in 1:8){
-    if(((n-i)>0)&((n-i)<9)) {sum62 <- sum62 + CM[i,n-i]}                
-                }
-  sum61 <- sum61 + sum62*n 
-               }
-            
-textural.feat[6] <- sum61
-####
+f[6] <- sum(0:(2 * (N.g - 1)) * p.xy.add)
 
-## Feature 8: Sum Entropy
-# somehow I failed to figure out textural.feat[8] and the log function 
-# may be the reason. I found the reason
-# the three numbers in the bottom right corner of Matirx CM are all 0
-# so the log(0) is minus infinite
-
-sum81 <- 0
-
-for (n in 2:16){
-  sum82 <- 0
-  for (i in 1:8){
-    if(((n-i)>0)&((n-i)<9)) {sum82 <- sum82 + CM[i,n-i]}                
-                }
-  sum81 <- sum81 + sum82*log(sum82)
-               }
-
-textural.feat[8] <- -sum81
 ####
 
 
 ## Feature 7: Sum Variance
-# since f8 failed so can not figure out f7 either
-sum71 <- 0
 
-for (n in 2:16){
-  sum72 <- 0
-  for (i in 1:8){
-    if(((n-i)>0)&((n-i)<9)) {sum72 <- sum72 + CM[i,n-i]}                
-                }
-  sum71 <- sum71 + sum71*(n-textural.feat[8])^2
-               }
+f[7] <- sum((0:(2 * (N.g - 1)) - f[6])^2 * p.xy.add)
 
-textural.feat[7] <- sum71
+####
+
+
+## Feature 8: Sum Entropy
+
+f[8] <- -sum(Ent.comp(p.xy.add))
+
 ####
 
 
 ## Feature 9: Entropy
-# f9 also failed because of the log function
 
-sum9 <- 0
+f[9] <- -sum(Ent.comp(p))
 
-for (i in 1:8){
-  for (j in 1:8){
-    sum9 <- sum9 + CM[i,j]*log(CM[i,j])
-                }
-              }
-
-textural.feat[9] <- -sum9
 ####
 
 
 ## Feature 10: Difference Variance
-pxMINUSy <- c()
+ADM <- sum(0:(N.g - 1) * p.xy.diff)  # Absolute difference mean
 
-for (n in 1:7){
-  sum10 <- 0
-  for (i in 1:8){
-    if(((i-n)>0) & ((i+n)<9)) {sum10 <- sum10 + CM[i,i-n] + CM[i,i+n]}
-    if(((i-n)>0) & ((i+n)>=9)) {sum10 <- sum10 + CM[i,i-n]}
-    if(((i-n)<=0) & ((i+n)<9)) {sum10 <- sum10 + CM[i,i+n]}
-                }
-  pxMINUSy[n] <- sum10
-              }
-
-textural.feat[10] <- var(pxMINUSy)
-
+f[10] <- sum((0:(N.g - 1) - ADM)^2 * p.xy.diff)
 
 ## Feature 11: Difference Entropy
-sum11 <- 0
 
-for (n in 1:7){
-  sum11 <- sum11 + pxMINUSy[n]*log(pxMINUSy[n])
-              }
+f[11] <- -sum(Ent.comp(p.xy.diff))
 
-textural.feat[11] <- -sum11
 ####
 
-return(textural.feat[feat.nums])
+
+## Entropy numbers
+p.indep <- replicate(N.g, p.x) * t(replicate(N.g, p.y))
+
+HX <- -sum(Ent.comp(p.x))
+HY <- -sum(Ent.comp(p.y))
+HXY <- f[9]
+HXY1 <- -sum(Ent.comp(p.indep) * ifelse(is.na(p/p.indep), 0, p/p.indep))
+HXY2 <- -sum(Ent.comp(p.indep))
+
+####
+
+
+## Feature 12: Information Measure of Correlation 1
+
+f[12] <- (HXY - HXY1) / max(HX, HY)
+
+####
+
+
+## Feature 13: Information Measure of Correlation 2
+
+f[13] <- sqrt(1 - exp(-2 * (HXY2 - HXY)))
+
+####
+
+
+## Feature 14: Maximal Correlation Coefficient
+# This is not included because the formula proposed by Haralick looks
+# suspicious and there were several other more obvious typos.
+#Q <- matrix(NA, N.g, N.g)
+#for(i in 1:N.g) {
+#  for(j in 1:N.g) {
+#    Q[i, j] <- sum(sapply(1:N.g, function(k) (p[i, k] * p[j, k]) / 
+#                                             (p.x[i] * p.y[k])))
+#  }
+#}
+#
+#f[14] <- sqrt(eigen(Q)$values[2])
+#
+####
+
+return(f)
 
 }
