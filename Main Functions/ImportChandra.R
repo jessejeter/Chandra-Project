@@ -1,4 +1,5 @@
-ImportChandra <- function(file.path, file.name = NA, ID.num = NA) {
+ImportChandra <- function(file.path, file.name = NA, ID.num = NA, 
+                          sections = FALSE) {
 
 # Import Chandra data.
 if(is.na(file.name) == FALSE) {

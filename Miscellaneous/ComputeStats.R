@@ -51,19 +51,31 @@ for(i in 1:num.files) {
   }
 }
 
+hist(HF.sim[, 1],breaks=80)
+
 plot(apply(pval, 1, mean), ylim=c(0, 1))
 plot(apply(pval, 1, max), ylim=c(0, 1))
 plot(apply(pval, 1, median), ylim=c(0, 1))
 plot(apply(pval, 1, min), ylim=c(0, 1))
+
 
 file.id.mat <- replicate(num.feats, 1:num.files)
 feat.id.mat <- t(replicate(num.files, 1:num.feats))
 plot(file.id.mat, pval, col=(file.id.mat %% 2) + 1, pch=paste(feat.id.mat), 
      cex=.5)
 
-feat <- 13
-plot(pval[, feat], ylim=c(0, 1))
 
+i <- 28
+DF <- ImportChandra("C:/Users/jeterjp/Documents/GitHub/Chandra-Project/Data/Text Files/",
+                       file.name=as.character(Chandra.info[i, 3]))
+thin.yes <- 
+thin.id <- sample(length(DF[, 3]), thin)
+Z <- PointSourcesCounts2(DF[thin.id, 3], DF[thin.id, 4], qs)
+X <- DF[,3]
+Y <- DF[,4]
+plot(X, Y, pch='.')
 
+feat <- 1
+hist(pval[, feat],breaks=38)
 
 

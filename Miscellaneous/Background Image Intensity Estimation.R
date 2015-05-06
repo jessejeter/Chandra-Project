@@ -3,7 +3,7 @@
 # Read all functions - change file.path
 sapply(list.files(paste(file.path, "/GitHub/Chandra-Project/Chandra R Functions", sep=""), full.names=TRUE), source)
 
-DF <- ImportChandra("C:/Users/jeterjp/Documents/GitHub/Chandra-Project/Chandra Data/Reference Background/","acisf03482N004_evt2_05_8keV_use_as_background_model_t1.txt")
+DF <- ImportChandra("C:/Users/jeterjp/Documents/GitHub/Chandra-Project/Data/Reference Background/","acisf03482N004_evt2_05_8keV_use_as_background_model_t1.txt")
 
 # Run Square_rot_bb function
 X <- DF[, 3]
