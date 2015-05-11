@@ -70,16 +70,17 @@ f[6] <- sum(0:(2 * (N.g - 1)) * p.xy.add)
 ####
 
 
-## Feature 7: Sum Variance
-
-f[7] <- sum((0:(2 * (N.g - 1)) - f[6])^2 * p.xy.add)
-
-####
-
 
 ## Feature 8: Sum Entropy
 
 f[8] <- -sum(Ent.comp(p.xy.add))
+
+####
+
+
+## Feature 7: Sum Variance
+
+f[7] <- sum((0:(2 * (N.g - 1)) - f[8])^2 * p.xy.add)
 
 ####
 
